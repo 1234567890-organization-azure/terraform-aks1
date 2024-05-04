@@ -16,11 +16,14 @@ env:
     ARM_CLIENT_SECRET: "${{ secrets.AZURE_CLIENT_SECRET }}"
     ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
     ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-    ARM_RESOURCE_GRP: "${{ secrets.AZURE_RSG }}"
-    ARM_REGION: "${{ secrets.AZURE_REGION }}"
-    TF_BACKEND_STORAGE_ACCOUNT: "${{ secrets.AZURE_STORAGE_ACCOUNT }}"
-    TF_BACKEND_CONTAINER_NAME: "${{ secrets.AZURE_CONTAINER_NAME }}"
-    TF_BACKEND_KEY: "${{ secrets.AZURE_KEY_TERRAFORM_TFSTATE }}"
+    TF_BACKEND_RESOURCE_GRP: "${{ secrets.AZURE_TRF_RSG }}"
+    TF_BACKEND_STORAGE_ACCOUNT: "${{ secrets.AZURE_TRF_STORAGE_ACCOUNT }}"
+    TF_BACKEND_CONTAINER_NAME: "${{ secrets.AZURE_TRF_CONTAINER_NAME }}"
+    TF_BACKEND_KEY: "${{ secrets.AZURE_TRF_KEY_TFSTATE }}"
+    K8S_RESOURCE_GRP: "${{ secrets.AZURE_K8S_RSG }}"
+    K8S_REGION: "${{ secrets.AZURE_K8S_REGION }}"
+    K8S_CLUSTER_NAME: "${{ secrets.AZURE_K8S_CLUSTER_NAME }}"
+    
 
 jobs:
    terraform:
@@ -49,7 +52,7 @@ jobs:
 
         - name: Terraform init
           id: init
-          run: terraform init -backend-config=resource_group_name="${{ env.ARM_RESOURCE_GRP }}" -backend-config=storage_account_name="${{ env.TF_BACKEND_STORAGE_ACCOUNT }}" -backend-config=container_name="${{ env.TF_BACKEND_CONTAINER_NAME }}" -backend-config=key="${{ env.TF_BACKEND_KEY }}"
+          run: terraform init -backend-config=resource_group_name="${{ env.TF_BACKEND_RESOURCE_GRP }}" -backend-config=storage_account_name="${{ env.TF_BACKEND_STORAGE_ACCOUNT }}" -backend-config=container_name="${{ env.TF_BACKEND_CONTAINER_NAME }}" -backend-config=key="${{ env.TF_BACKEND_KEY }}"
 
         - name: Terraform format
           id: fmt
@@ -61,7 +64,13 @@ jobs:
 
         - name: Terraform plan
           id: terra_plan
-          run: terraform plan -var=resource_group_name="${{ env.ARM_RESOURCE_GRP }}" -var=region="${{ env.ARM_REGION }}" -var=client_id="${{ env.ARM_CLIENT_ID }}" -var=client_secret="${{ env.ARM_CLIENT_SECRET }}" -no-color -input=false -out planfile
+          run: terraform plan \
+                  -var=resource_group_name="${{ env.K8S_RESOURCE_GRP }}" \
+                  -var=region="${{ env.K8S_REGION }}" \
+                  -var=client_id="${{ env.ARM_CLIENT_ID }}" \
+                  -var=client_secret="${{ env.ARM_CLIENT_SECRET }}" \
+                  -var=cluster_name="${{ env.K8S_CLUSTER_NAME }}" \
+                  -no-color -input=false -out planfile
           continue-on-error: true
 
         - name: Terraform plan status
