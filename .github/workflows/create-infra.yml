@@ -64,13 +64,7 @@ jobs:
 
         - name: Terraform plan
           id: terra_plan
-          run: terraform plan \
-                  -var=resource_group_name="${{ env.K8S_RESOURCE_GRP }}" \
-                  -var=region="${{ env.K8S_REGION }}" \
-                  -var=client_id="${{ env.ARM_CLIENT_ID }}" \
-                  -var=client_secret="${{ env.ARM_CLIENT_SECRET }}" \
-                  -var=cluster_name="${{ env.K8S_CLUSTER_NAME }}" \
-                  -no-color -input=false -out planfile
+          run: terraform plan -var=resource_group_name="${{ env.K8S_RESOURCE_GRP }}" -var=region="${{ env.K8S_REGION }}" -var=client_id="${{ env.ARM_CLIENT_ID }}" -var=client_secret="${{ env.ARM_CLIENT_SECRET }}" -var=cluster_name="${{ env.K8S_CLUSTER_NAME }}" -no-color -input=false -out planfile
           continue-on-error: true
 
         - name: Terraform plan status
