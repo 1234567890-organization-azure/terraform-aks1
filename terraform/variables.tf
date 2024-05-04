@@ -23,5 +23,4 @@ variable "cluster_name" {
 
 variable "cluster_dns_prefix" {
   description = "Azure Kubernetes Service Cluster DNS Prefix"
-  default = var.cluster_name
 }
