@@ -1,6 +1,14 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "resource_group_name" {
+  description = "Azure Kubernetes Service Cluster service principal"
+}
+
+variable "region" {
+  description = "Azure Kubernetes Service Cluster service principal"
+}
+
 variable "client_id" {
   description = "Azure Kubernetes Service Cluster service principal"
 }

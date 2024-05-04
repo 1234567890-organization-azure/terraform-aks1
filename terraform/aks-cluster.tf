@@ -8,8 +8,8 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "default" {
-  name     = "${random_pet.prefix.id}-rg"
-  location = "Central India"
+  name     = var.resource_group_name
+  location = var.region
 
   tags = {
     environment = "Demo"
