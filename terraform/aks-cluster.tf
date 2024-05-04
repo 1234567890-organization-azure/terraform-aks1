@@ -30,6 +30,9 @@ resource "azurerm_kubernetes_cluster" "default" {
     os_disk_size_gb = 30
   }
 
+  service_principal {
+  }
+
   role_based_access_control_enabled = true
 
   tags = {
