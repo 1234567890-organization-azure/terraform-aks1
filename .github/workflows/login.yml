@@ -1,0 +1,23 @@
+name: AzureLoginSample
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Message before Login
+        run: echo Hello, world! About to login to Azure
+      
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      - name: Message after Login
+        run: echo Hello, world! Logged in to Azure
+
+          
