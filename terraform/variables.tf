@@ -21,6 +21,3 @@ variable "cluster_name" {
   description = "Azure Kubernetes Service Cluster Name"
 }
 
-variable "cluster_dns_prefix" {
-  description = "Azure Kubernetes Service Cluster DNS Prefix"
-}
