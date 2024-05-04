@@ -60,7 +60,7 @@ jobs:
 
         - name: Terraform plan
           id: terra_plan
-          run: terraform plan -no-color -input=false -destroy -out planfile
+          run: terraform plan -var='client_id="${{ env.ARM_CLIENT_ID }}"' -var='client_secret="${{ env.ARM_CLIENT_SECRET }}"' -no-color -input=false -destroy -out planfile
           continue-on-error: true
 
         - name: Terraform plan status
