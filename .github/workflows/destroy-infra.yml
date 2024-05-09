@@ -35,7 +35,7 @@ concurrency:
 
 jobs:
   terraform:
-    name: "Create the infra"
+    name: "Destroy the infra"
     runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     defaults:
