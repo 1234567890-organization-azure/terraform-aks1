@@ -1,13 +1,31 @@
-name: AzureLoginSample
+name: Azure Login
 on:
   workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'A GitHub Environment to pull action secrets from'
+        required: true
+        type: environment
+env:
+    ARM_CREDENTIALS: "${{ secrets.AZURE_CREDENTIALS }}"
 
 jobs:
-  build:
+  login:
+    name: "Login to Azure"
     runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform with specified version on the runner
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Print Input Variables
+        id: input_print
+        run: |
+          echo "Environment Used : ${{ inputs.ENVIRONMENT }}"
 
       - name: Message before Login
         run: echo Hello, world! About to login to Azure
@@ -15,9 +33,7 @@ jobs:
       - name: Log in with Azure
         uses: azure/login@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          creds: '${{ env.ARM_CREDENTIALS }}'
 
       - name: Message after Login
         run: echo Hello, world! Logged in to Azure
-
-          

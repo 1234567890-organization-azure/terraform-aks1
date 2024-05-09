@@ -1,5 +1,11 @@
 name: "Destroy Infra"
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'A GitHub Environment to pull action secrets from'
+        required: true
+        type: environment
 # on:
 #   push:
 #     branches:
@@ -23,32 +29,32 @@ env:
     K8S_RESOURCE_GRP: "${{ secrets.AZURE_K8S_RSG }}"
     K8S_REGION: "${{ secrets.AZURE_K8S_REGION }}"
     K8S_CLUSTER_NAME: "${{ secrets.AZURE_K8S_CLUSTER_NAME }}"
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.ENVIRONMENT }}
+  cancel-in-progress: true
 
 jobs:
-   terraform:
-     name: "Apply terraform code changes"
-     runs-on: ubuntu-latest
-     defaults:
-       run:
-         #shell: bash
-         working-directory: ./terraform
+  terraform:
+    name: "Create the infra"
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
+    defaults:
+      run:
+        #shell: bash
+        working-directory: ./terraform
 
-     steps:
-
+    steps:
         - name: Checkout source code
           uses: actions/checkout@v4
-
-        # - name: Log in with Azure
-        #   uses: azure/login@v1
-        #   with:
-        #     creds: '${{ secrets.AZURE_CREDENTIALS }}'
-
-        # - name: Message after Login
-        #   run: echo Hello, world! Logged in to Azure
 
         - name: Setup Terraform with specified version on the runner
           uses: hashicorp/setup-terraform@v3
 
+        - name: Print Input Variables
+          id: input_print
+          run: |
+            echo "Environment Used : ${{ inputs.ENVIRONMENT }}"
+          
         - name: Terraform init
           id: init
           run: terraform init -backend-config=resource_group_name="${{ env.TF_BACKEND_RESOURCE_GRP }}" -backend-config=storage_account_name="${{ env.TF_BACKEND_STORAGE_ACCOUNT }}" -backend-config=container_name="${{ env.TF_BACKEND_CONTAINER_NAME }}" -backend-config=key="${{ env.TF_BACKEND_KEY }}"
